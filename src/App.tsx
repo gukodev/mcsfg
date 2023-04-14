@@ -3,7 +3,7 @@ function App() {
         <main>
             <h1>hello world!!! helloo??... hello..?? xDDD '-'</h1>
         </main>
-    );
+    )
 }
 
-export default App;
+export default App

@@ -48,7 +48,7 @@ export async function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsDataURL(file)
-        reader.onload = (e) => {
+        reader.onload = () => {
             return resolve(reader.result as string)
         }
         reader.onerror = function (err) {
@@ -94,7 +94,7 @@ export async function fileToSHA256(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsArrayBuffer(file)
-        reader.onload = (e) => {
+        reader.onload = () => {
             const hash = SHA256(arrayBufferToHex(reader.result as ArrayBuffer))
             return resolve(hash.toString())
         }

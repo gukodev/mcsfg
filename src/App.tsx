@@ -13,8 +13,11 @@ function App() {
             alert('Note: non .png files found. They will be ignored.')
         if (!filteredFiles.length) return alert('No skins found!')
 
-        const file = await generateSkinFile(files)
-        downloadFile('launcher_custom_skins.json', JSON.stringify(file))
+        const file = await generateSkinFile(filteredFiles)
+        downloadFile(
+            'launcher_custom_skins.json',
+            JSON.stringify(file, null, 2)
+        )
         setSkinFileGenerated(true)
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({

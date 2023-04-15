@@ -34,8 +34,8 @@ export async function generateSkinFile(skins: File[]) {
 
     let index = 1
     let customSkins: ParsedSkinType = {}
-    const timestamp = new Date().toISOString()
-    log.info('Timestamp:', timestamp)
+    const date = new Date()
+    log.info('Timestamp:', date)
 
     for (const skinFile of skins) {
         log.nl()
@@ -51,15 +51,17 @@ export async function generateSkinFile(skins: File[]) {
         index += 1
 
         customSkins[id] = {
-            created: timestamp,
+            created: date.toISOString(),
+            updated: date.toISOString(),
             id,
             name,
             skinImage,
             modelImage,
             slim,
             textureId,
-            updated: timestamp,
         }
+
+        date.setTime(date.getTime() - 1)
     }
 
     return {

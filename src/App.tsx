@@ -40,8 +40,8 @@ function App() {
                     file.
                 </p>
                 <p>
-                    <b>Note:</b> the 3d skin preview will not be generated (a
-                    head skin preview will be used instead), you will need to
+                    <b>Note:</b> the 3d skin preview will not be generated, a
+                    head skin preview will be used instead. You will need to
                     open the desired skin in the Minecraft launcher and click
                     "Save" (without making any changes) in order to generate the
                     3d skin preview.

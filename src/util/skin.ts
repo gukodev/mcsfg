@@ -6,6 +6,7 @@ type ParsedSkinType = {
         id: string
         name: string
         skinImage: string
+        modelImage: string
         slim: boolean
         textureId: string
         updated: string
@@ -23,12 +24,14 @@ export async function generateSkinFile(skins: File[]) {
         const id = `skin_${index}`
         const skinImage = await fileToBase64(skinFile)
         const textureId = await fileToSHA256(skinFile)
+        const modelImage = await createSkinPreview(skinImage)
         index += 1
         customSkins[id] = {
             created: timestamp,
             id,
             name,
             skinImage,
+            modelImage,
             slim,
             textureId,
             updated: timestamp,
@@ -50,6 +53,28 @@ export async function fileToBase64(file: File): Promise<string> {
         }
         reader.onerror = function (err) {
             reject(err)
+        }
+    })
+}
+
+export async function createSkinPreview(base64: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        const img = new Image()
+        img.src = base64
+        img.onload = () => {
+            const canvas = document.createElement('canvas')
+            const size = 128
+            canvas.width = size
+            canvas.height = size
+
+            const ctx = canvas.getContext('2d')
+            if (!ctx) return reject('Failed to create canvas context')
+
+            ctx.imageSmoothingEnabled = false
+            ctx.drawImage(img, 8, 8, 8, 8, 0, 0, size, size)
+
+            const cropped = canvas.toDataURL()
+            return resolve(cropped)
         }
     })
 }

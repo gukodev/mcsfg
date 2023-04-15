@@ -58,13 +58,8 @@ function App() {
                     .
                 </p>
                 <p>
-                    The file format is:{' '}
-                    <span>
-                        {' '}
-                        <b>Skin Name</b>
-                        <i>_slim</i>.png
-                    </span>
-                    , where the <i>_slim</i> part is optional.
+                    This tool will automatically detect if your skin is slim or
+                    not.
                 </p>
             </div>
             <div {...getRootProps()}>

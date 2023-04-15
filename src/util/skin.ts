@@ -14,7 +14,7 @@ type ParsedSkinType = {
     }
 }
 
-export function sortFilesByName(files: File[]): File[] {
+function sortFilesByName(files: File[]): File[] {
     return files.sort((a, b) => {
         const nameA = a.name.toUpperCase()
         const nameB = b.name.toUpperCase()
@@ -28,49 +28,7 @@ export function sortFilesByName(files: File[]): File[] {
     })
 }
 
-export async function generateSkinFile(skins: File[]) {
-    log.info('Generating skin file...')
-    skins = sortFilesByName(skins)
-
-    let index = 1
-    let customSkins: ParsedSkinType = {}
-    const date = new Date()
-    log.info('Timestamp:', date)
-
-    for (const skinFile of skins) {
-        log.nl()
-        const name = skinFile.name.split('.')[0]
-        const id = `skin_${index}`
-        log.info(`Generating skin "${name}" of id "${id}"`)
-
-        const skinImage = await fileToBase64(skinFile)
-        const textureId = await fileToSHA256(skinFile)
-        const slim = await isSkinSlim(skinImage)
-        const modelImage = await createSkinPreview(skinImage)
-
-        index += 1
-
-        customSkins[id] = {
-            created: date.toISOString(),
-            updated: date.toISOString(),
-            id,
-            name,
-            skinImage,
-            modelImage,
-            slim,
-            textureId,
-        }
-
-        date.setTime(date.getTime() - 1)
-    }
-
-    return {
-        customSkins,
-        version: 1,
-    }
-}
-
-export async function fileToBase64(file: File): Promise<string> {
+async function fileToBase64(file: File): Promise<string> {
     log.info('Converting file to base64...')
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -86,7 +44,7 @@ export async function fileToBase64(file: File): Promise<string> {
     })
 }
 
-export async function isSkinSlim(base64: string): Promise<boolean> {
+async function isSkinSlim(base64: string): Promise<boolean> {
     log.info('Detecting skin type...')
     return new Promise<boolean>((resolve) => {
         const img = new Image()
@@ -130,7 +88,7 @@ export async function isSkinSlim(base64: string): Promise<boolean> {
     })
 }
 
-export async function createSkinPreview(base64: string): Promise<string> {
+async function createSkinPreview(base64: string): Promise<string> {
     log.info('Creating skin head preview...')
     return new Promise<string>((resolve, reject) => {
         const img = new Image()
@@ -157,34 +115,51 @@ export async function createSkinPreview(base64: string): Promise<string> {
     })
 }
 
-function arrayBufferToHex(buffer: ArrayBuffer): string {
-    const byteArray = new Uint8Array(buffer)
-    const hexParts = []
-    for (let i = 0; i < byteArray.length; i++) {
-        const hex = byteArray[i].toString(16)
-        const paddedHex = ('00' + hex).slice(-2)
-        hexParts.push(paddedHex)
-    }
-    return hexParts.join('')
+function generateRandomTextureId() {
+    const str = Math.random().toString(36).substring(2)
+    return SHA256(str).toString(enc.Hex)
 }
 
-export async function fileToSHA256(file: File): Promise<string> {
-    log.info('Generating file hash...')
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsArrayBuffer(file)
-        reader.onload = () => {
-            const hash = SHA256(
-                arrayBufferToHex(reader.result as ArrayBuffer)
-            ).toString()
-            log.info('Generated hash:', hash.toString())
-            return resolve(hash)
+export async function generateSkinFile(skins: File[]) {
+    log.info('Generating skin file...')
+    skins = sortFilesByName(skins)
+
+    let index = 1
+    let customSkins: ParsedSkinType = {}
+    const date = new Date()
+    log.info('Timestamp:', date)
+
+    for (const skinFile of skins) {
+        log.nl()
+        const name = skinFile.name.split('.')[0]
+        const id = `skin_${index}`
+        log.info(`Generating skin "${name}" of id "${id}"`)
+
+        const textureId = generateRandomTextureId()
+        const skinImage = await fileToBase64(skinFile)
+        const slim = await isSkinSlim(skinImage)
+        const modelImage = await createSkinPreview(skinImage)
+
+        index += 1
+
+        customSkins[id] = {
+            created: date.toISOString(),
+            updated: date.toISOString(),
+            id,
+            name,
+            skinImage,
+            modelImage,
+            slim,
+            textureId,
         }
-        reader.onerror = function (err) {
-            log.error('Could not generate file hash.')
-            return reject(err)
-        }
-    })
+
+        date.setTime(date.getTime() - 1)
+    }
+
+    return {
+        customSkins,
+        version: 1,
+    }
 }
 
 export function downloadFile(name: string, content: string) {
@@ -195,9 +170,4 @@ export function downloadFile(name: string, content: string) {
     link.download = name
     link.click()
     window.URL.revokeObjectURL(url)
-}
-
-export function generateRandomTextureId() {
-    const str = Math.random().toString(36).substring(2)
-    return SHA256(str).toString(enc.Hex)
 }

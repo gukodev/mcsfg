@@ -37,7 +37,10 @@ function App() {
                     <i className="text-green-vanilla-300">
                         launcher_custom_skins.json
                     </i>{' '}
-                    file.
+                    file, so you can drop all your skins in the box bellow,
+                    generate the file and move it to the <i>.minecraft</i>{' '}
+                    folder instead of having to manually add each skin in the
+                    launcher.
                 </p>
                 <p>
                     <b>Note:</b> the 3d skin preview will not be generated, a

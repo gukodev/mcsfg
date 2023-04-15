@@ -20,7 +20,7 @@ function App() {
         )
         setSkinFileGenerated(true)
     }, [])
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const { getRootProps, getInputProps } = useDropzone({
         onDrop,
     })
 

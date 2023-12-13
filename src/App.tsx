@@ -54,7 +54,7 @@ function App() {
                     server, so the processing speed depends on your device
                     performance. You can check the source code{' '}
                     <a
-                        href="https://github.com/umgustavo/mcsfg"
+                        href="https://github.com/gukodev/mcsfg"
                         target="_blank"
                         rel="noreferrer"
                         className="text-green-vanilla-300 underline"
